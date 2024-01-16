@@ -11,28 +11,26 @@
 
 
 void radixSortSerialPass(
-    std::vector<uint> &keys,
-    std::vector<uint> &keys_radix,
-    uint startBit,
-    uint numBits
+        std::vector <uint> &keys,
+        std::vector <uint> &keys_radix,
+        uint startBit,
+        uint numBits
 ) {
     uint numBuckets = 1 << numBits;
     uint mask = numBuckets - 1;
 
     // compute the frequency histogram
-    std::vector<uint> histogramRadixFrequency(numBuckets);
+    std::vector <uint> histogramRadixFrequency(numBuckets);
 
-    for (uint i = 0; i < keys.size(); ++i)
-    {
+    for (uint i = 0; i < keys.size(); ++i) {
         uint key = (keys[i] >> startBit) & mask;
         ++histogramRadixFrequency[key];
     }
 
     // now scan it
-    std::vector<uint> exScanHisto(numBuckets, 0);
+    std::vector <uint> exScanHisto(numBuckets, 0);
 
-    for (uint i = 1; i < numBuckets; ++i)
-    {
+    for (uint i = 1; i < numBuckets; ++i) {
         exScanHisto[i] = exScanHisto[i - 1] + histogramRadixFrequency[i - 1];
         histogramRadixFrequency[i - 1] = 0;
     }
@@ -40,8 +38,7 @@ void radixSortSerialPass(
     histogramRadixFrequency[numBuckets - 1] = 0;
 
     // now add the local to the global and scatter the result
-    for (uint i = 0; i < keys.size(); ++i)
-    {
+    for (uint i = 0; i < keys.size(); ++i) {
         uint key = (keys[i] >> startBit) & mask;
 
         uint localOffset = histogramRadixFrequency[key]++;
@@ -52,14 +49,13 @@ void radixSortSerialPass(
 }
 
 int radixSortSerial(
-    std::vector<uint> &keys,
-    std::vector<uint> &keys_radix,
-    uint numBits
+        std::vector <uint> &keys,
+        std::vector <uint> &keys_radix,
+        uint numBits
 ) {
     assert(numBits <= 16);
 
-    for (uint startBit = 0; startBit < 32; startBit += 2 * numBits)
-    {
+    for (uint startBit = 0; startBit < 32; startBit += 2 * numBits) {
         radixSortSerialPass(keys, keys_radix, startBit, numBits);
         radixSortSerialPass(keys_radix, keys, startBit + numBits, numBits);
     }
@@ -67,17 +63,15 @@ int radixSortSerial(
     return 0;
 }
 
-void initializeRandomly(std::vector<uint> &keys)
-{
+void initializeRandomly(std::vector <uint> &keys) {
     std::default_random_engine generator;
-    std::uniform_int_distribution<uint> distribution(0, kRandMax);
+    std::uniform_int_distribution <uint> distribution(0, kRandMax);
 
     for (uint i = 0; i < keys.size(); ++i)
         keys[i] = distribution(generator);
 }
 
-int main()
-{
+int main() {
     Test1();
     Test2();
     Test3();
@@ -85,11 +79,11 @@ int main()
     Test5();
 
     // Initialize Variables
-    std::vector<uint> keys_stl(kSizeTestVector);
+    std::vector <uint> keys_stl(kSizeTestVector);
     initializeRandomly(keys_stl);
-    std::vector<uint> keys_serial = keys_stl;
-    std::vector<uint> keys_parallel = keys_stl;
-    std::vector<uint> temp_keys(kSizeTestVector);
+    std::vector <uint> keys_serial = keys_stl;
+    std::vector <uint> keys_parallel = keys_stl;
+    std::vector <uint> temp_keys(kSizeTestVector);
 
 #ifdef QUESTION6
     std::vector<uint> keys_orig = keys_stl;

@@ -85,7 +85,7 @@
     cout << intStack.top() <<endl; 
     ```
 
-# 虚拟函数 virtual
+## 虚拟函数 virtual
 * 虚函数  
   c++重写中涉及到
   ```c++
@@ -140,7 +140,7 @@
   };
   ```
   
-# 友元函数
+## 友元函数
 ```c++
 class Box{
     double a;
@@ -154,7 +154,7 @@ void printWidth(Box box){
 ```
 通过这种方法可以访问Box类中的所有变量。
 
-# 运算符重载
+## 运算符重载
 一些常见的运算符和它们在C++中的重载用途：
 
 * Arithmetic Operators (算术运算符):
@@ -180,5 +180,28 @@ Box operator+(const Box&);
 Box operator+(const Box&, const Box&);
 ```
 
+## std::all_of
+```c++
+bool all_students_passed(const std::vector <Student> &students,
+                         double pass_threshold) {
+    return std::all_of(students.begin(),
+                       students.end(),
+                       [pass_threshold](Student s) {
+                           double hw = s.homework * HOMEWORK_WEIGHT;
+                           double mt = s.midterm * MIDTERM_WEIGHT;
+                           double fe = s.final_exam * FINAL_EXAM_WEIGHT;
+                           return hw + mt + fe >= pass_threshold;
+                       }
+    );
+}
+```
+
+[pass_threshold] 是 lambda 函数中的一个捕获列表（capture list），用于指定 lambda 函数所捕获的外部变量。Lambda 函数可以通过捕获列表捕获外部变量，并在函数体内使用这些变量。
+
+在这个特定的 lambda 函数中，[pass_threshold] 指明了 lambda 函数捕获了名为 pass_threshold 的外部变量。这意味着 lambda 函数可以在其函数体内访问并使用 pass_threshold 这个外部变量。
+
+Lambda 函数的捕获列表有两种方式：
+* 按值捕获: [var1, var2, ...] - 按值捕获指定变量。Lambda 函数拷贝这些变量的值，可以在函数体内读取但不能修改这些值。
+* 按引用捕获: [&var1, &var2, ...] - 按引用捕获指定变量。Lambda 函数通过引用访问这些变量，可以在函数体内读取和修改这些变量。
  
 
